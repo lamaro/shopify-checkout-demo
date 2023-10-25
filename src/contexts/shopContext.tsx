@@ -1,9 +1,32 @@
 import { createContext, useState, useContext, ReactNode } from "react";
 import { createCheckout, updateCheckout, getAllProducts } from "@/lib/shopify";
+import { createProduct, parseProduct } from "@/lib/backend";
 
 type CartItem = {
-  id: string;
+  gid: string;
   quantity: number;
+};
+
+type ParsedProduct = {
+  title: string;
+  admin_graphql_api_id: string;
+  variants: ParsedVariant[];
+};
+
+type ParsedVariant = {
+  title: string;
+  sku: string;
+  price: number;
+  admin_graphql_api_id: string;
+  quantity: number;
+};
+
+type ProductVariation = {
+  sku: string;
+  option1: string;
+  title: string;
+  price: number;
+  inventory: number;
 };
 
 interface ShopContextProps {
@@ -12,6 +35,7 @@ interface ShopContextProps {
   checkoutUrl: string;
   getProducts: () => void;
   createShopifyCheckout: (items: CartItem[]) => void;
+  createShopifyProduct: (variations: ProductVariation[]) => void;
 }
 
 interface ShopContextProviderProps {
@@ -24,32 +48,39 @@ export const ShopContextProvider: React.FC<ShopContextProviderProps> = ({
   children,
 }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
-  // const [cartOpen, setCartOpen] = useState<boolean>(false);
+  const [newProduct, setNewProduct] = useState<ParsedProduct[]>([]);
+  const [cartOpen, setCartOpen] = useState<boolean>(false);
   const [checkoutId, setCheckoutId] = useState<string>("");
   const [checkoutUrl, setCheckoutUrl] = useState<string>("");
-  // const [cartLoading, setCartLoading] = useState<boolean>(false);
+  const [cartLoading, setCartLoading] = useState<boolean>(false);
 
-  //example request data
   const getProducts = async () => {
-    const prod = await getAllProducts();
-    console.log(prod);
+    // const prod = await getAllProducts();
+    // console.log(prod);
   };
 
-  const createProduct = async () => {
-    //TODO
-    //first create product in our API and get variants, then
-    //createShopifyCheckout(variantsAndQuantities)
+  const createShopifyProduct = async (variations: ProductVariation[]) => {
+    const newProduct = await createProduct(variations);
+    const parsedProduct = parseProduct(newProduct.product);
+    // setNewProduct(parsedProduct);
+    console.log(parsedProduct);
+
+    const checkoutItems = parsedProduct.variants.map(({ gid, quantity }) => {
+      return { gid, quantity: 1 };
+    });
+    console.log(checkoutItems);
+    await createShopifyCheckout(checkoutItems);
   };
 
   const createShopifyCheckout = async (items: CartItem[]) => {
     //Add updateCheckout funct.
     try {
       const checkout = await createCheckout(items);
-      console.log(checkout.webUrl);
+      console.log("Checkout URL", checkout.webUrl);
       setCheckoutId(checkout.id);
       setCheckoutUrl(checkout.webUrl);
       localStorage.setItem("checkout_id", JSON.stringify([items, checkout]));
-      //Redirect to checkout URL?
+      //TODO Redirect to checkout URL?
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +94,7 @@ export const ShopContextProvider: React.FC<ShopContextProviderProps> = ({
         checkoutUrl,
         getProducts,
         createShopifyCheckout,
+        createShopifyProduct,
       }}
     >
       {children}
