@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 import { useShopContext } from "@/contexts/shopContext";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -13,12 +14,14 @@ export default function Home() {
 
   useEffect(() => {
     getProducts();
+   
+
   }, [getProducts]);
 
   const goToCheckout = () => {
     createShopifyCheckout([
-      { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 2 },
-      { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 5 },
+      { gid: "gid://shopify/ProductVariant/47005271752994", quantity: 2 },
+      { gid: "gid://shopify/ProductVariant/47005271785762", quantity: 5 },
     ]);
   };
 

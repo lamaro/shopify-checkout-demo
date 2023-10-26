@@ -1,3 +1,15 @@
+/*
+https://community.shopify.com/c/graphql-basics-and/graphql-api-publish-to-all-channels/m-p/897309
+https://shopify.dev/docs/api/admin-graphql/2023-10/mutations/publishablePublish
+https://community.shopify.com/c/sales-channels-payments-apps-and/edit-product-sales-channels-via-rest-api/td-p/1771221
+
+
+*/
+
+
+
+
+
 import { createContext, useState, useContext, ReactNode } from "react";
 import { createCheckout, updateCheckout, getAllProducts } from "@/lib/shopify";
 import { createProduct, parseProduct } from "@/lib/backend";
@@ -18,7 +30,6 @@ type ParsedVariant = {
   sku: string;
   price: number;
   admin_graphql_api_id: string;
-  quantity: number;
 };
 
 type ProductVariation = {
@@ -65,9 +76,10 @@ export const ShopContextProvider: React.FC<ShopContextProviderProps> = ({
     // setNewProduct(parsedProduct);
     console.log(parsedProduct);
 
-    const checkoutItems = parsedProduct.variants.map(({ gid, quantity }) => {
+    const checkoutItems = parsedProduct.variants.map(({ gid }) => {
       return { gid, quantity: 1 };
     });
+
     console.log(checkoutItems);
     await createShopifyCheckout(checkoutItems);
   };

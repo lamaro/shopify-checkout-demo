@@ -6,41 +6,19 @@ const storefrontAccessToken =
 
 async function ShopifyData(query) {
   const URL = `https://${domain}/api/2023-10/graphql.json`;
-
-  const options = {
-    endpoint: URL,
-    method: "POST",
-    headers: {
-      "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query }),
-  };
-
-
   try {
-    // const runQuery = await axios.post(
-    //   URL,
-    //   { query },
-    //   {
-    //     headers: {
-    //       "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
-    //       Accept: "application/json",
-    //       "Content-Type": "application/json",
-    //     },
-    //   }
-    // );
-    // return runQuery.data;
-
-    
-    const data = await fetch(URL, options).then((response) => {
-      return response.json();
-    });
-
-    return data;
-
-
+    const runQuery = await axios.post(
+      URL,
+      { query },
+      {
+        headers: {
+          "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return runQuery.data;
   } catch (error) {
     throw new Error("Products not fetched", error);
   }
@@ -66,6 +44,24 @@ export async function getAllProducts() {
 
   return slugs;
 }
+// export async function getChannels() {
+//   const query = `{
+//     publications(first:10) {
+//       edges {
+//         node {
+//           id
+//           name
+//         }
+//       }
+//     } 
+//   }`;
+
+//   const response = await ShopifyData(query);
+// console.log(response)
+//   const channels = response.data ? response.data : [];
+
+//   return channels;
+// }
 
 export async function getProduct(handle) {
   const query = `
@@ -147,11 +143,7 @@ export async function getProduct(handle) {
 }
 
 export async function createCheckout(lineItems) {
-  const dummyItems = [
-    { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 2 },
-    { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 5 },
-  ]
-  const lineItemsObject = dummyItems.map((item) => {
+  const lineItemsObject = lineItems.map((item) => {
     return `{variantId: "${item.gid}",quantity: ${item.quantity}}`;
   });
   console.log(lineItemsObject);

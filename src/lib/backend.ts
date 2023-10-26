@@ -15,7 +15,6 @@ type ParsedVariant = {
   sku: string;
   price: number;
   admin_graphql_api_id: string;
-  quantity: number;
 };
 
 type ParsedProduct = {
@@ -27,8 +26,8 @@ type ParsedProduct = {
 
 const parseProduct = ({ admin_graphql_api_id, title, variants }: ParsedProduct) => {
   const parsedVariants = variants.map(
-    ({ title, sku, price, admin_graphql_api_id, quantity }: ParsedVariant) => {
-      return { title, sku, price, gid: admin_graphql_api_id, quantity };
+    ({ title, sku, price, admin_graphql_api_id }: ParsedVariant) => {
+      return { title, sku, price, gid: admin_graphql_api_id };
     }
   );
   console.log(parsedVariants)
