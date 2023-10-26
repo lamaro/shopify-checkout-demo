@@ -6,19 +6,41 @@ const storefrontAccessToken =
 
 async function ShopifyData(query) {
   const URL = `https://${domain}/api/2023-10/graphql.json`;
+
+  const options = {
+    endpoint: URL,
+    method: "POST",
+    headers: {
+      "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query }),
+  };
+
+
   try {
-    const runQuery = await axios.post(
-      URL,
-      { query },
-      {
-        headers: {
-          "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    return runQuery.data;
+    // const runQuery = await axios.post(
+    //   URL,
+    //   { query },
+    //   {
+    //     headers: {
+    //       "X-Shopify-Storefront-Access-Token": storefrontAccessToken,
+    //       Accept: "application/json",
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // );
+    // return runQuery.data;
+
+    
+    const data = await fetch(URL, options).then((response) => {
+      return response.json();
+    });
+
+    return data;
+
+
   } catch (error) {
     throw new Error("Products not fetched", error);
   }
@@ -125,7 +147,11 @@ export async function getProduct(handle) {
 }
 
 export async function createCheckout(lineItems) {
-  const lineItemsObject = lineItems.map((item) => {
+  const dummyItems = [
+    { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 2 },
+    { gid: "gid://shopify/ProductVariant/46921440756002", quantity: 5 },
+  ]
+  const lineItemsObject = dummyItems.map((item) => {
     return `{variantId: "${item.gid}",quantity: ${item.quantity}}`;
   });
   console.log(lineItemsObject);
