@@ -4,7 +4,6 @@ import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
 import { useShopContext } from "@/contexts/shopContext";
 
-
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -14,24 +13,36 @@ export default function Home() {
 
   useEffect(() => {
     getProducts();
-   
-
   }, [getProducts]);
 
   const goToCheckout = () => {
     createShopifyCheckout([
-      { gid: "gid://shopify/ProductVariant/47005271752994", quantity: 2 },
-      { gid: "gid://shopify/ProductVariant/47005271785762", quantity: 5 },
+      { gid: "gid://shopify/ProductVariant/47007327846690", quantity: 2 },
+      { gid: "gid://shopify/ProductVariant/47007327879458", quantity: 5 },
     ]);
   };
 
   const createSampleProduct = () => {
-    const prodCreated = createShopifyProduct([
-      { sku: "2223", option1:"test1", title: "Apple Watch1", price: 200.99, inventory: 3 },
-      { sku: "ooo", option1:"test2", title: "Apple Watch2", price: 200.99, inventory: 3 },
-      { sku: "j00kk", option1:"tes3", title: "Apple Watch3", price: 200.99, inventory: 3 },
+    createShopifyProduct([
+      {
+        title: "Pepe Coin",
+        options: "Pepe Coin x 1",
+        price: 2000,
+        sku: "DADA",
+      },
+      {
+        title: "Pepe Coin 2",
+        options: "Pepe Coin x 2",
+        price: 4000,
+        sku: "DADA2",
+      },
+      {
+        title: "Pepe Coin 3",
+        options: "Pepe Coin x 3",
+        price: 5100.98,
+        sku: "DADA3",
+      },
     ]);
-    console.log(prodCreated);
   };
 
   return (

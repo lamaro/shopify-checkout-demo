@@ -44,24 +44,6 @@ export async function getAllProducts() {
 
   return slugs;
 }
-// export async function getChannels() {
-//   const query = `{
-//     publications(first:10) {
-//       edges {
-//         node {
-//           id
-//           name
-//         }
-//       }
-//     } 
-//   }`;
-
-//   const response = await ShopifyData(query);
-// console.log(response)
-//   const channels = response.data ? response.data : [];
-
-//   return channels;
-// }
 
 export async function getProduct(handle) {
   const query = `
@@ -149,7 +131,7 @@ export async function createCheckout(lineItems) {
   console.log(lineItemsObject);
   const query = `
     mutation {
-      checkoutCreate(input: {
+    checkoutCreate(input: {
         lineItems: [${lineItemsObject}]
       }) {
         checkout {

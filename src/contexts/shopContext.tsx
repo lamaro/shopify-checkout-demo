@@ -11,7 +11,7 @@ https://community.shopify.com/c/sales-channels-payments-apps-and/edit-product-sa
 
 
 import { createContext, useState, useContext, ReactNode } from "react";
-import { createCheckout, updateCheckout, getAllProducts } from "@/lib/shopify";
+import { createCheckout } from "@/lib/shopify";
 import { createProduct, parseProduct } from "@/lib/backend";
 
 type CartItem = {
@@ -34,10 +34,9 @@ type ParsedVariant = {
 
 type ProductVariation = {
   sku: string;
-  option1: string;
+  options: string;
   title: string;
   price: number;
-  inventory: number;
 };
 
 interface ShopContextProps {
@@ -72,6 +71,7 @@ export const ShopContextProvider: React.FC<ShopContextProviderProps> = ({
 
   const createShopifyProduct = async (variations: ProductVariation[]) => {
     const newProduct = await createProduct(variations);
+    console.log(newProduct)
     const parsedProduct = parseProduct(newProduct.product);
     // setNewProduct(parsedProduct);
     console.log(parsedProduct);
