@@ -22,11 +22,7 @@ type ParsedProduct = {
   variants: ParsedVariant[];
 };
 
-const parseProduct = ({
-  id,
-  title,
-  variants,
-}: ParsedProduct) => {
+const parseProduct = ({ id, title, variants }: ParsedProduct) => {
   const parsedVariants = variants.map(
     ({ title, sku, price, id }: ParsedVariant) => {
       return { title, sku, price, gid: id };
@@ -37,11 +33,9 @@ const parseProduct = ({
 };
 
 const createProduct = async (variations: ProductVariation[]) => {
-  const variants = variations.map(
-    ({ sku, options, title, price }) => {
-      return { title, sku, price, options };
-    }
-  );
+  const variants = variations.map(({ sku, options, title, price }) => {
+    return { title, sku, price, options };
+  });
 
   try {
     const newProduct = await axios.post(
